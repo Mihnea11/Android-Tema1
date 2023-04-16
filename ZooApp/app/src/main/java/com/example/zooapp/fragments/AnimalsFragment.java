@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +15,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.zooapp.R;
+import com.example.zooapp.Utility.Animal;
+import com.example.zooapp.Utility.AnimalsAdapter;
+import com.example.zooapp.Utility.Continents;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AnimalsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AnimalsFragment extends Fragment
+public class AnimalsFragment extends Fragment implements AnimalsAdapter.OnAnimalClickListener
 {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -77,6 +87,7 @@ public class AnimalsFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_items);
 
         Button exitButton = view.findViewById(R.id.button_exit_animals);
         exitButton.setOnClickListener(v ->
@@ -93,5 +104,79 @@ public class AnimalsFragment extends Fragment
                 Navigation.findNavController(getView()).navigate(R.id.action_animalsFragment_to_mainFragment);
             }
         });
+
+        List<Animal> animals = new ArrayList<Animal>();
+        animals.add(new Animal("Wolf", Continents.Europe));
+        animals.add(new Animal("Brown bear", Continents.Europe));
+        animals.add(new Animal("Lynx", Continents.Europe));
+        animals.add(new Animal("Red deer", Continents.Europe));
+        animals.add(new Animal("European bison", Continents.Europe));
+        animals.add(new Animal("Golden eagle", Continents.Europe));
+        animals.add(new Animal("Chamois", Continents.Europe));
+        animals.add(new Animal("Bearded vulture", Continents.Europe));
+        animals.add(new Animal("Scorpio", Continents.Europe));
+        animals.add(new Animal("Jackal", Continents.Europe));
+
+        animals.add(new Animal("Lion", Continents.Africa));
+        animals.add(new Animal("Elephant", Continents.Africa));
+        animals.add(new Animal("African buffalo", Continents.Africa));
+        animals.add(new Animal("Giraffe", Continents.Africa));
+        animals.add(new Animal("Impala", Continents.Africa));
+        animals.add(new Animal("Oryx", Continents.Africa));
+        animals.add(new Animal("Baboon", Continents.Africa));
+        animals.add(new Animal("African penguin", Continents.Africa));
+        animals.add(new Animal("Chimpanzee", Continents.Africa));
+        animals.add(new Animal("Termite", Continents.Africa));
+
+        animals.add(new Animal("Bald eagle", Continents.America));
+        animals.add(new Animal("Raccoon", Continents.America));
+        animals.add(new Animal("Mountain lion", Continents.America));
+        animals.add(new Animal("American alligator", Continents.America));
+        animals.add(new Animal("Pronghorn", Continents.America));
+        animals.add(new Animal("Groundhog", Continents.America));
+        animals.add(new Animal("American bison", Continents.America));
+        animals.add(new Animal("Beaver", Continents.America));
+        animals.add(new Animal("White-tailed deer", Continents.America));
+        animals.add(new Animal("Striped skunk", Continents.America));
+
+        animals.add(new Animal("Kangaroo", Continents.Australia));
+        animals.add(new Animal("Wombat", Continents.Australia));
+        animals.add(new Animal("Koala", Continents.Australia));
+        animals.add(new Animal("Quokka", Continents.Australia));
+        animals.add(new Animal("Possum", Continents.Australia));
+        animals.add(new Animal("Saltwater crocodile", Continents.Australia));
+        animals.add(new Animal("Quoll", Continents.Australia));
+        animals.add(new Animal("Cockatoos", Continents.Australia));
+        animals.add(new Animal("Redback spider", Continents.Australia));
+        animals.add(new Animal("Huntsman spider", Continents.Australia));
+
+        animals.add(new Animal("Asian black bear", Continents.Asia));
+        animals.add(new Animal("Tiger", Continents.Asia));
+        animals.add(new Animal("Asian elephant", Continents.Asia));
+        animals.add(new Animal("Red panda", Continents.Asia));
+        animals.add(new Animal("King cobra", Continents.Asia));
+        animals.add(new Animal("Leopard", Continents.Asia));
+        animals.add(new Animal("Indian cobra", Continents.Asia));
+        animals.add(new Animal("Bengal tiger", Continents.Asia));
+        animals.add(new Animal("Malayan tapir", Continents.Asia));
+        animals.add(new Animal("Urial", Continents.Asia));
+
+        AnimalsAdapter adapter = new AnimalsAdapter(animals, this);
+
+        recyclerView.setAdapter(adapter);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    public void onAnimalClick(Animal animalCard, int color)
+    {
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable("animal", animalCard);
+        bundle.putInt("color", color);
+
+        Navigation.findNavController(getView()).navigate(R.id.action_animalsFragment_to_animalDetailsFragment, bundle);
     }
 }

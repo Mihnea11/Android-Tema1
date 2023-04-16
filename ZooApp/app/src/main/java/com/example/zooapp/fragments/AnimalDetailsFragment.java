@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.zooapp.R;
+import com.example.zooapp.Utility.Animal;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -103,5 +105,20 @@ public class AnimalDetailsFragment extends Fragment
                 Navigation.findNavController(getView()).navigate(R.id.action_animalDetailsFragment_to_animalsFragment);
             }
         });
+
+        TextView animalNameDetails;
+        TextView animalContinentDetails;
+
+        animalNameDetails = view.findViewById(R.id.animal_name_details);
+        animalContinentDetails = view.findViewById(R.id.animal_continent_details);
+
+        Animal animal = (Animal) getArguments().getSerializable("animal");
+        int color = getArguments().getInt("color");
+
+        if (animal != null) {
+            animalNameDetails.setText(animal.getName());
+            animalContinentDetails.setText(animal.getContinent().toString());
+        }
+        view.setBackgroundColor(color);
     }
 }
