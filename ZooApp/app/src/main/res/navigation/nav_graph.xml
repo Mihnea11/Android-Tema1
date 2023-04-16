@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.zooapp.fragments.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_animalsFragment"
+            app:destination="@id/animalsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/animalsFragment"
+        android:name="com.example.zooapp.fragments.AnimalsFragment"
+        android:label="fragment_animals"
+        tools:layout="@layout/fragment_animals" >
+        <action
+            android:id="@+id/action_animalsFragment_to_animalDetailsFragment"
+            app:destination="@id/animalDetailsFragment" />
+        <action
+            android:id="@+id/action_animalsFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/animalDetailsFragment"
+        android:name="com.example.zooapp.fragments.AnimalDetailsFragment"
+        android:label="fragment_animal_details"
+        tools:layout="@layout/fragment_animal_details" >
+        <action
+            android:id="@+id/action_animalDetailsFragment_to_animalsFragment"
+            app:destination="@id/animalsFragment" />
+        <action
+            android:id="@+id/action_animalDetailsFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+</navigation>

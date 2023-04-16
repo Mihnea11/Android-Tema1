@@ -1,4 +1,4 @@
-package com.example.zoo;
+package com.example.zooapp;
 
 import org.junit.Test;
 
