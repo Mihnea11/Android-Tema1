@@ -1,182 +1,177 @@
 package com.example.zooapp.fragments;
 
+import android.annotation.SuppressLint;
+import android.graphics.Typeface;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
+import android.widget.EditText;
+import android.widget.Toast;
 import com.example.zooapp.R;
-import com.example.zooapp.Utility.Animal;
-import com.example.zooapp.Utility.AnimalsAdapter;
-import com.example.zooapp.Utility.Continents;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import com.example.zooapp.ViewModels.AnimalViewModel;
+import com.example.zooapp.adapters.AnimalItemAdapter;
+import com.example.zooapp.models.Animal;
+import com.example.zooapp.models.Continent;
 import java.util.List;
-import java.util.Random;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AnimalsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AnimalsFragment extends Fragment implements AnimalsAdapter.OnAnimalClickListener
+
+public class AnimalsFragment extends Fragment implements AnimalItemAdapter.OnAnimalClickListener
 {
+    private EditText editTextAnimal, editTextContinent;
+    private AnimalViewModel animalViewModel;
+    private List<Animal> currentAnimals;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AnimalsFragment()
-    {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AnimalsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AnimalsFragment newInstance(String param1, String param2)
-    {
-        AnimalsFragment fragment = new AnimalsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        View view = inflater.inflate(R.layout.fragment_animals, container, false);
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_animals, container, false);
-    }
-
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_items);
+
+        Button menuButton = view.findViewById(R.id.button_menu_animals);
+        menuButton.setOnClickListener(v -> {
+            Navigation.findNavController(getView()).navigate(R.id.action_animalsFragment_to_mainFragment);
+        });
 
         Button exitButton = view.findViewById(R.id.button_exit_animals);
-        exitButton.setOnClickListener(v ->
-        {
+        exitButton.setOnClickListener(v -> {
             requireActivity().finish();
         });
 
-        Button menuButton = view.findViewById(R.id.button_menu_animals);
-        menuButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Navigation.findNavController(getView()).navigate(R.id.action_animalsFragment_to_mainFragment);
-            }
+        Button addAnimalButton = view.findViewById(R.id.addAnimalButton);
+        addAnimalButton.setOnClickListener(v -> {
+            addOrUpdateAnimal(editTextAnimal.getText().toString(), editTextContinent.getText().toString());
         });
 
-        List<Animal> animals = new ArrayList<Animal>();
-        animals.add(new Animal("Wolf", Continents.Europe));
-        animals.add(new Animal("Brown bear", Continents.Europe));
-        animals.add(new Animal("Lynx", Continents.Europe));
-        animals.add(new Animal("Red deer", Continents.Europe));
-        animals.add(new Animal("European bison", Continents.Europe));
-        animals.add(new Animal("Golden eagle", Continents.Europe));
-        animals.add(new Animal("Chamois", Continents.Europe));
-        animals.add(new Animal("Bearded vulture", Continents.Europe));
-        animals.add(new Animal("Scorpio", Continents.Europe));
-        animals.add(new Animal("Jackal", Continents.Europe));
+        addAnimalButton.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
+            {
+                addAnimalButton.setTextSize(22);
+                addAnimalButton.setTypeface(null, Typeface.BOLD);
+            } else if (event.getAction() == MotionEvent.ACTION_UP)
+            {
+                addAnimalButton.setTextSize(17);
+                addAnimalButton.setTypeface(null, Typeface.NORMAL);
+            }
+            return false; // return false so that the OnClickListener still works
+        });
 
-        animals.add(new Animal("Lion", Continents.Africa));
-        animals.add(new Animal("Elephant", Continents.Africa));
-        animals.add(new Animal("African buffalo", Continents.Africa));
-        animals.add(new Animal("Giraffe", Continents.Africa));
-        animals.add(new Animal("Impala", Continents.Africa));
-        animals.add(new Animal("Oryx", Continents.Africa));
-        animals.add(new Animal("Baboon", Continents.Africa));
-        animals.add(new Animal("African penguin", Continents.Africa));
-        animals.add(new Animal("Chimpanzee", Continents.Africa));
-        animals.add(new Animal("Termite", Continents.Africa));
+        editTextAnimal = view.findViewById(R.id.editTextAnimal);
+        editTextContinent = view.findViewById(R.id.editTextContinent);
 
-        animals.add(new Animal("Bald eagle", Continents.America));
-        animals.add(new Animal("Raccoon", Continents.America));
-        animals.add(new Animal("Mountain lion", Continents.America));
-        animals.add(new Animal("American alligator", Continents.America));
-        animals.add(new Animal("Pronghorn", Continents.America));
-        animals.add(new Animal("Groundhog", Continents.America));
-        animals.add(new Animal("American bison", Continents.America));
-        animals.add(new Animal("Beaver", Continents.America));
-        animals.add(new Animal("White-tailed deer", Continents.America));
-        animals.add(new Animal("Striped skunk", Continents.America));
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_items);
 
-        animals.add(new Animal("Kangaroo", Continents.Australia));
-        animals.add(new Animal("Wombat", Continents.Australia));
-        animals.add(new Animal("Koala", Continents.Australia));
-        animals.add(new Animal("Quokka", Continents.Australia));
-        animals.add(new Animal("Possum", Continents.Australia));
-        animals.add(new Animal("Saltwater crocodile", Continents.Australia));
-        animals.add(new Animal("Quoll", Continents.Australia));
-        animals.add(new Animal("Cockatoos", Continents.Australia));
-        animals.add(new Animal("Redback spider", Continents.Australia));
-        animals.add(new Animal("Huntsman spider", Continents.Australia));
-
-        animals.add(new Animal("Asian black bear", Continents.Asia));
-        animals.add(new Animal("Tiger", Continents.Asia));
-        animals.add(new Animal("Asian elephant", Continents.Asia));
-        animals.add(new Animal("Red panda", Continents.Asia));
-        animals.add(new Animal("King cobra", Continents.Asia));
-        animals.add(new Animal("Leopard", Continents.Asia));
-        animals.add(new Animal("Indian cobra", Continents.Asia));
-        animals.add(new Animal("Bengal tiger", Continents.Asia));
-        animals.add(new Animal("Malayan tapir", Continents.Asia));
-        animals.add(new Animal("Urial", Continents.Asia));
-
-        AnimalsAdapter adapter = new AnimalsAdapter(animals, this);
-
+        AnimalItemAdapter adapter = new AnimalItemAdapter(this);
         recyclerView.setAdapter(adapter);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+
+        animalViewModel = new ViewModelProvider(requireActivity()).get(AnimalViewModel.class);
+        animalViewModel.getAllAnimals().observe(getViewLifecycleOwner(), animals ->
+        {
+            currentAnimals = animals;
+            adapter.setAnimals(animals);
+        });
     }
 
     @Override
-    public void onAnimalClick(Animal animalCard, int color)
+    public void onAnimalClick(Animal animal, int color)
     {
-        Bundle bundle = new Bundle();
+/*        Bundle bundle = new Bundle();
 
-        bundle.putSerializable("animal", animalCard);
+        bundle.putSerializable("animal", animal);
         bundle.putInt("color", color);
 
-        Navigation.findNavController(getView()).navigate(R.id.action_animalsFragment_to_animalDetailsFragment, bundle);
+        Log.d("FragmentRecyclerView", "onAnimalClick: animal=" + animal + ", color=" + color);
+
+        Navigation.findNavController(getView()).navigate(R.id.action_fragmentRecyclerView_to_animalDetailsFragment, bundle);*/
+    }
+
+
+    @Override
+    public void onDeleteButtonClick(Animal animal)
+    {
+        animalViewModel.delete(animal);
+        Toast.makeText(getContext(), "Animal deleted successfully.", Toast.LENGTH_SHORT).show();
+    }
+
+    private Animal findAnimalByName(List<Animal> animals, String animalName)
+    {
+        for (Animal animal : animals)
+        {
+            if (animal.getName().equalsIgnoreCase(animalName))
+            {
+                return animal;
+            }
+        }
+        return null;
+    }
+
+    private void addOrUpdateAnimal(String animalName, String continentName)
+    {
+        boolean isAnimalNameValid = validateAnimalName(animalName);
+        boolean isContinentNameValid = validateContinentName(continentName);
+
+        if (isAnimalNameValid && isContinentNameValid) {
+            Animal existingAnimal = findAnimalByName(currentAnimals, animalName);
+
+            Animal animal = new Animal(animalName.trim(), Continent.valueOf(continentName.toUpperCase().trim()));
+            animalViewModel.insertOrUpdate(animal);
+
+            boolean isNewAnimal = existingAnimal == null;
+            if (isNewAnimal) {
+                Toast.makeText(getContext(), "Animal added successfully.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Animal updated successfully.", Toast.LENGTH_SHORT).show();
+            }
+
+            editTextAnimal.setText("");
+            editTextContinent.setText("");
+        }
+    }
+
+    private boolean validateAnimalName(String animalName)
+    {
+        if (TextUtils.isEmpty(animalName.trim())) {
+            Toast.makeText(getContext(), "Invalid input. Please enter a valid animal name.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateContinentName(String continentName)
+    {
+        if (TextUtils.isEmpty(continentName.trim())) {
+            Toast.makeText(getContext(), "Invalid input. Please enter a valid continent.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        try {
+            Continent.valueOf(continentName.toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(getContext(), "Invalid input. Please enter a valid continent.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
     }
 }
