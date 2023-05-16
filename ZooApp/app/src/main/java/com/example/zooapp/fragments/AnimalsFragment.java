@@ -96,16 +96,8 @@ public class AnimalsFragment extends Fragment implements AnimalItemAdapter.OnAni
     @Override
     public void onAnimalClick(Animal animal, int color)
     {
-/*        Bundle bundle = new Bundle();
 
-        bundle.putSerializable("animal", animal);
-        bundle.putInt("color", color);
-
-        Log.d("FragmentRecyclerView", "onAnimalClick: animal=" + animal + ", color=" + color);
-
-        Navigation.findNavController(getView()).navigate(R.id.action_fragmentRecyclerView_to_animalDetailsFragment, bundle);*/
     }
-
 
     @Override
     public void onDeleteButtonClick(Animal animal)
