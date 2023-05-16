@@ -159,7 +159,7 @@ public class AnimalItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             animalNameTextView = itemView.findViewById(R.id.animal_name);
             animalContinentTypeTextView = itemView.findViewById(R.id.continent_name);
-            //deleteItemButton = itemView.findViewById(R.id.deleteItemButton);
+            deleteItemButton = itemView.findViewById(R.id.deleteItemButton);
         }
 
         public void bind(Animal animal)
@@ -169,7 +169,8 @@ public class AnimalItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             deleteItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
                     onAnimalClickListenerVar.onDeleteButtonClick(animal);
                 }
             });
